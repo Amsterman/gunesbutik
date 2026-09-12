@@ -10,8 +10,8 @@ import { firebaseConfig } from "./firebase-config.js";
 
 // Fotoğraflar Cloudinary'de tutulur (kredi kartı istemeyen ücretsiz servis).
 // Bu iki değeri README.md'deki adımları izleyerek kendi Cloudinary hesabından alacaksın.
-const CLOUDINARY_CLOUD_NAME = "BURAYA_CLOUD_NAME";
-const CLOUDINARY_UPLOAD_PRESET = "BURAYA_UPLOAD_PRESET";
+const CLOUDINARY_CLOUD_NAME = "y7qynhph";
+const CLOUDINARY_UPLOAD_PRESET = "bdhcra0l";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
