@@ -15,7 +15,10 @@
 
 * { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
 
 body {
   margin: 0;
@@ -23,6 +26,7 @@ body {
   color: var(--color-ink);
   font-family: var(--font-body);
   line-height: 1.5;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -35,6 +39,11 @@ button, input, textarea, select {
   font-size: inherit;
 }
 
+input, textarea, select {
+  min-width: 0;
+  width: 100%;
+}
+
 :focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
@@ -44,6 +53,7 @@ button, input, textarea, select {
   max-width: 1080px;
   margin: 0 auto;
   padding: 0 24px;
+  width: 100%;
 }
 
 /* Header / hero */
@@ -65,13 +75,13 @@ button, input, textarea, select {
   font-size: clamp(2.1rem, 5vw, 3rem);
   font-weight: 600;
   margin: 0;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
 }
 
 .brand-tagline {
   color: var(--color-ink-soft);
   font-size: 1rem;
-  max-width: 46ch;
+  max-width: 52ch;
   margin: 14px 0 0;
 }
 
@@ -100,10 +110,14 @@ button, input, textarea, select {
 
 .tabs {
   display: flex;
-  gap: 28px;
+  gap: 22px;
   margin: 36px 0 28px;
   border-bottom: 1px solid var(--color-line);
   overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 1px;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
 }
 
 .tab {
@@ -115,6 +129,7 @@ button, input, textarea, select {
   cursor: pointer;
   border-bottom: 2px solid transparent;
   white-space: nowrap;
+  flex: 0 0 auto;
 }
 
 .tab.active {
@@ -138,6 +153,7 @@ button, input, textarea, select {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .product-photo {
@@ -160,6 +176,8 @@ button, input, textarea, select {
   justify-content: center;
   color: var(--color-ink-soft);
   font-size: 0.85rem;
+  text-align: center;
+  padding: 8px;
 }
 
 .product-body {
@@ -167,6 +185,7 @@ button, input, textarea, select {
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .product-body h3 {
@@ -174,22 +193,28 @@ button, input, textarea, select {
   font-size: 1.15rem;
   font-weight: 500;
   margin: 0 0 6px;
+  overflow-wrap: anywhere;
 }
 
 .product-desc {
   font-size: 0.9rem;
   color: var(--color-ink-soft);
   margin: 0 0 10px;
+  overflow-wrap: anywhere;
 }
 
 .product-price {
   font-weight: 600;
   margin: 0 0 16px;
+  overflow-wrap: anywhere;
 }
 
 .whatsapp-btn {
   margin-top: auto;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
   text-align: center;
   padding: 10px 14px;
   border: 1px solid var(--color-ink);
@@ -227,6 +252,7 @@ button, input, textarea, select {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
   padding: 28px 0;
   border-bottom: 1px solid var(--color-line);
 }
@@ -246,6 +272,7 @@ button, input, textarea, select {
   font-size: 0.9rem;
   text-decoration: underline;
   padding: 0;
+  width: auto;
 }
 
 .login-shell {
@@ -267,7 +294,8 @@ button, input, textarea, select {
   gap: 6px;
 }
 
-.field label {
+.field label,
+.tag-fieldset legend {
   font-size: 0.85rem;
   color: var(--color-ink-soft);
 }
@@ -284,6 +312,45 @@ button, input, textarea, select {
 
 .field textarea { resize: vertical; min-height: 70px; }
 
+.tag-fieldset {
+  margin: 0 0 16px;
+  padding: 0;
+  border: none;
+}
+
+.tag-fieldset legend {
+  margin-bottom: 8px;
+  padding: 0;
+}
+
+.tag-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.tag-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 9px 10px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+  font-size: 0.86rem;
+  cursor: pointer;
+}
+
+.tag-option input {
+  width: auto;
+  flex: 0 0 auto;
+}
+
+.tag-option span {
+  overflow-wrap: anywhere;
+}
+
 .primary-btn {
   background: var(--color-ink);
   color: var(--color-surface);
@@ -293,6 +360,8 @@ button, input, textarea, select {
   cursor: pointer;
   font-size: 0.95rem;
   font-weight: 500;
+  min-height: 44px;
+  width: auto;
 }
 
 .primary-btn:disabled { opacity: 0.6; cursor: default; }
@@ -306,14 +375,10 @@ button, input, textarea, select {
 
 .admin-grid {
   display: grid;
-  grid-template-columns: 340px 1fr;
+  grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
   gap: 40px;
   padding: 36px 0 64px;
   align-items: start;
-}
-
-@media (max-width: 760px) {
-  .admin-grid { grid-template-columns: 1fr; }
 }
 
 .admin-form-card {
@@ -323,6 +388,7 @@ button, input, textarea, select {
   padding: 22px;
   position: sticky;
   top: 24px;
+  min-width: 0;
 }
 
 .admin-form-card h2 {
@@ -335,23 +401,26 @@ button, input, textarea, select {
   display: flex;
   gap: 12px;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .admin-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  min-width: 0;
 }
 
 .admin-row {
   display: grid;
-  grid-template-columns: 56px 1fr auto;
+  grid-template-columns: 56px minmax(0, 1fr) auto;
   gap: 14px;
   align-items: center;
   background: var(--color-surface);
   border: 1px solid var(--color-line);
   border-radius: var(--radius);
   padding: 10px 14px;
+  min-width: 0;
 }
 
 .admin-thumb {
@@ -362,7 +431,17 @@ button, input, textarea, select {
   background: var(--color-bg);
 }
 
-.admin-row-info { display: flex; flex-direction: column; gap: 2px; }
+.admin-row-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.admin-row-info strong,
+.admin-row-info span {
+  overflow-wrap: anywhere;
+}
 
 .admin-row-info span { font-size: 0.82rem; color: var(--color-ink-soft); }
 
@@ -372,11 +451,110 @@ button, input, textarea, select {
   background: none;
   border: 1px solid var(--color-line);
   border-radius: var(--radius);
-  padding: 6px 10px;
+  padding: 8px 10px;
   cursor: pointer;
   font-size: 0.82rem;
+  min-height: 38px;
 }
 
 .admin-row-actions .delete-btn { color: #a3352b; }
 
 .empty-note { color: var(--color-ink-soft); font-size: 0.9rem; }
+
+@media (max-width: 760px) {
+  .wrap { padding: 0 16px; }
+
+  .site-header { padding: 36px 0 28px; }
+
+  .brand-row { gap: 12px; }
+
+  .brand-name { font-size: 2rem; }
+
+  .tabs {
+    gap: 18px;
+    margin: 28px -16px 22px;
+    padding: 0 16px 1px;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    padding-bottom: 48px;
+  }
+
+  .product-body { padding: 12px; }
+
+  .product-body h3 { font-size: 1rem; }
+
+  .product-desc { font-size: 0.82rem; }
+
+  .product-price {
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+  }
+
+  .whatsapp-btn {
+    font-size: 0.8rem;
+    padding: 9px 8px;
+  }
+
+  .admin-grid {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    padding: 24px 0 48px;
+  }
+
+  .admin-form-card {
+    position: static;
+    padding: 18px;
+  }
+}
+
+@media (max-width: 420px) {
+  .wrap { padding: 0 12px; }
+
+  .brand-name { font-size: 1.78rem; }
+
+  .tabs {
+    margin-left: -12px;
+    margin-right: -12px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .product-grid { gap: 10px; }
+
+  .product-body { padding: 10px; }
+
+  .whatsapp-btn {
+    line-height: 1.25;
+    min-height: 46px;
+  }
+
+  .tag-options { grid-template-columns: 1fr; }
+
+  .admin-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-row {
+    grid-template-columns: 52px minmax(0, 1fr);
+    align-items: start;
+    padding: 10px;
+  }
+
+  .admin-thumb {
+    width: 52px;
+    height: 52px;
+  }
+
+  .admin-row-actions {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .admin-row-actions button {
+    flex: 1;
+  }
+}
