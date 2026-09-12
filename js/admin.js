@@ -10,8 +10,8 @@ import { firebaseConfig } from "./firebase-config.js";
 
 // Fotoğraflar Cloudinary'de tutulur (kredi kartı istemeyen ücretsiz servis).
 // Bu iki değeri README.md'deki adımları izleyerek kendi Cloudinary hesabından alacaksın.
-const CLOUDINARY_CLOUD_NAME = "y7qynhph";
-const CLOUDINARY_UPLOAD_PRESET = "bdhcra0l";
+const CLOUDINARY_CLOUD_NAME = "BURAYA_CLOUD_NAME";
+const CLOUDINARY_UPLOAD_PRESET = "BURAYA_UPLOAD_PRESET";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -101,7 +101,7 @@ function renderList(products) {
       <img src="${p.imageUrl || ""}" alt="" class="admin-thumb">
       <div class="admin-row-info">
         <strong>${escapeHtml(p.name)}</strong>
-        <span>${p.category === "parfum" ? "Parfüm" : "Temizlik Ürünü"}${p.price ? " · " + escapeHtml(p.price) : ""}</span>
+        <span>${p.category === "parfum" ? "Parfüm" : "Aksesuar"}${p.price ? " · " + escapeHtml(p.price) : ""}</span>
       </div>
       <div class="admin-row-actions">
         <button type="button" class="edit-btn">Düzenle</button>
