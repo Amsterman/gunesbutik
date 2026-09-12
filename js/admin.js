@@ -1,4 +1,3 @@
-```javascript
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
 import {
   getAuth,
@@ -15,12 +14,20 @@ import {
   deleteDoc,
   doc,
   onSnapshot,
-  query,
-  orderBy,
   serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
 import { firebaseConfig } from "./firebase-config.js";
+import {
+  MAIN_CATEGORIES,
+  PRODUCT_COLLECTIONS,
+  getCategoryLabel,
+  getCreatedAtMillis,
+  getTagLabel,
+  isAllowedCloudinaryImageUrl,
+  normalizeCategory,
+  normalizeTags,
+} from "./catalog-config.js";
 
 /*
  * ============================================================
@@ -56,16 +63,6 @@ const db = getFirestore(app);
    YARDIMCI FONKSİYONLAR
    ============================================================ */
 
-function escapeHtml(str = "") {
-  return String(str).replace(/[&<>\"']/g, (s) => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;",
-  }[s]));
-}
-
 function getCloudinaryErrorMessage(data, response) {
   if (data?.error?.message) {
     return data.error.message;
@@ -88,6 +85,25 @@ function getCloudinaryErrorMessage(data, response) {
   }
 
   return `Fotoğraf yüklenemedi. Sunucu kodu: ${response.status}`;
+}
+
+function setStatusMessage(message, className = "empty-note") {
+  productList.replaceChildren();
+  const note = document.createElement("p");
+  note.className = className;
+  note.textContent = message;
+  productList.appendChild(note);
+}
+
+function sortProducts(products) {
+  return [...products].sort((a, b) => {
+    const dateDiff = getCreatedAtMillis(b) - getCreatedAtMillis(a);
+    if (dateDiff !== 0) {
+      return dateDiff;
+    }
+
+    return String(a.name || "").localeCompare(String(b.name || ""), "tr");
+  });
 }
 
 /* ============================================================
@@ -183,9 +199,64 @@ const productList = document.getElementById("product-list");
 const formTitle = document.getElementById("form-title");
 const submitBtn = document.getElementById("submit-btn");
 const cancelEditBtn = document.getElementById("cancel-edit-btn");
+const categorySelect = document.getElementById("p-category");
+const tagOptions = document.getElementById("tag-options");
 
 let editingId = null;
 let unsubscribeList = null;
+
+/* ============================================================
+   FORM SEÇENEKLERİ
+   ============================================================ */
+
+function renderCategoryOptions() {
+  categorySelect.replaceChildren();
+
+  MAIN_CATEGORIES.forEach((category) => {
+    const option = document.createElement("option");
+    option.value = category.value;
+    option.textContent = category.label;
+    categorySelect.appendChild(option);
+  });
+}
+
+function renderTagOptions() {
+  tagOptions.replaceChildren();
+
+  PRODUCT_COLLECTIONS.forEach((tag) => {
+    const label = document.createElement("label");
+    label.className = "tag-option";
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.name = "tags";
+    checkbox.value = tag.value;
+
+    const text = document.createElement("span");
+    text.textContent = tag.label;
+
+    label.append(checkbox, text);
+    tagOptions.appendChild(label);
+  });
+}
+
+function getSelectedTags() {
+  return normalizeTags(
+    Array.from(productForm.querySelectorAll('input[name="tags"]:checked'))
+      .map((checkbox) => checkbox.value)
+  );
+}
+
+function setSelectedTags(tags) {
+  const selected = new Set(normalizeTags(tags));
+
+  productForm.querySelectorAll('input[name="tags"]').forEach((checkbox) => {
+    checkbox.checked = selected.has(checkbox.value);
+  });
+}
+
+renderCategoryOptions();
+renderTagOptions();
 
 /* ============================================================
    AUTH
@@ -263,30 +334,22 @@ function listenProducts() {
     unsubscribeList();
   }
 
-  const q = query(
-    collection(db, "products"),
-    orderBy("createdAt", "desc")
-  );
-
   unsubscribeList = onSnapshot(
-    q,
+    collection(db, "products"),
     (snap) => {
       const products = snap.docs.map((d) => ({
         id: d.id,
         ...d.data(),
       }));
 
-      renderList(products);
+      renderList(sortProducts(products));
     },
     (err) => {
       console.error("Firestore ürün listeleme hatası:", err);
-
-      productList.innerHTML = `
-        <p class="error-note">
-          Ürünler yüklenemedi.
-          Firestore bağlantısını ve güvenlik kurallarını kontrol et.
-        </p>
-      `;
+      setStatusMessage(
+        "Ürünler yüklenemedi. Firestore bağlantısını ve güvenlik kurallarını kontrol et.",
+        "error-note"
+      );
     }
   );
 }
@@ -296,14 +359,12 @@ function listenProducts() {
    ============================================================ */
 
 function renderList(products) {
-  productList.innerHTML = "";
+  productList.replaceChildren();
 
   if (products.length === 0) {
-    productList.innerHTML = `
-      <p class="empty-note">
-        Henüz ürün eklenmedi. Soldaki formdan ilk ürününü ekleyebilirsin.
-      </p>
-    `;
+    setStatusMessage(
+      "Henüz ürün eklenmedi. Soldaki formdan ilk ürününü ekleyebilirsin."
+    );
     return;
   }
 
@@ -311,61 +372,56 @@ function renderList(products) {
     const row = document.createElement("div");
     row.className = "admin-row";
 
-    const imageUrl =
-      typeof p.imageUrl === "string" &&
-      /^https:\/\/res\.cloudinary\.com\//i.test(p.imageUrl)
-        ? p.imageUrl
-        : "";
+    const imageUrl = isAllowedCloudinaryImageUrl(p.imageUrl) ? p.imageUrl : "";
 
-    row.innerHTML = `
-      ${
-        imageUrl
-          ? `<img
-              src="${escapeHtml(imageUrl)}"
-              alt=""
-              class="admin-thumb"
-              loading="lazy"
-            >`
-          : `<div class="admin-thumb"></div>`
-      }
+    if (imageUrl) {
+      const img = document.createElement("img");
+      img.src = imageUrl;
+      img.alt = "";
+      img.className = "admin-thumb";
+      img.loading = "lazy";
+      row.appendChild(img);
+    } else {
+      const placeholder = document.createElement("div");
+      placeholder.className = "admin-thumb";
+      row.appendChild(placeholder);
+    }
 
-      <div class="admin-row-info">
-        <strong>${escapeHtml(p.name || "İsimsiz ürün")}</strong>
+    const info = document.createElement("div");
+    info.className = "admin-row-info";
 
-        <span>
-          ${
-            p.category === "parfum"
-              ? "Parfüm"
-              : "Aksesuar"
-          }
+    const name = document.createElement("strong");
+    name.textContent = p.name || "İsimsiz ürün";
 
-          ${
-            p.price
-              ? " · " + escapeHtml(p.price)
-              : ""
-          }
-        </span>
-      </div>
+    const meta = document.createElement("span");
+    const tags = normalizeTags(p.tags)
+      .map(getTagLabel)
+      .filter(Boolean);
+    meta.textContent = [
+      getCategoryLabel(p.category),
+      p.price || "",
+      tags.length ? tags.join(", ") : "",
+    ].filter(Boolean).join(" · ");
 
-      <div class="admin-row-actions">
-        <button type="button" class="edit-btn">
-          Düzenle
-        </button>
+    info.append(name, meta);
 
-        <button type="button" class="delete-btn">
-          Sil
-        </button>
-      </div>
-    `;
+    const actions = document.createElement("div");
+    actions.className = "admin-row-actions";
 
-    row
-      .querySelector(".edit-btn")
-      .addEventListener("click", () => startEdit(p));
+    const editButton = document.createElement("button");
+    editButton.type = "button";
+    editButton.className = "edit-btn";
+    editButton.textContent = "Düzenle";
+    editButton.addEventListener("click", () => startEdit(p));
 
-    row
-      .querySelector(".delete-btn")
-      .addEventListener("click", () => removeProduct(p));
+    const deleteButton = document.createElement("button");
+    deleteButton.type = "button";
+    deleteButton.className = "delete-btn";
+    deleteButton.textContent = "Sil";
+    deleteButton.addEventListener("click", () => removeProduct(p));
 
+    actions.append(editButton, deleteButton);
+    row.append(info, actions);
     productList.appendChild(row);
   });
 }
@@ -380,9 +436,10 @@ function startEdit(p) {
   formTitle.textContent = "Ürünü Düzenle";
 
   productForm.name.value = p.name || "";
-  productForm.category.value = p.category || "parfum";
+  productForm.category.value = normalizeCategory(p.category);
   productForm.price.value = p.price || "";
   productForm.description.value = p.description || "";
+  setSelectedTags(p.tags);
 
   submitBtn.textContent = "Değişiklikleri Kaydet";
   cancelEditBtn.hidden = false;
@@ -401,6 +458,7 @@ function resetForm() {
   editingId = null;
 
   productForm.reset();
+  setSelectedTags([]);
 
   formTitle.textContent = "Yeni Ürün Ekle";
   submitBtn.textContent = "Ürünü Ekle";
@@ -423,13 +481,15 @@ productForm.addEventListener("submit", async (e) => {
 
   submitBtn.disabled = true;
 
-  const originalLabel = editingId
+  const isEditing = Boolean(editingId);
+  const originalLabel = isEditing
     ? "Değişiklikleri Kaydet"
     : "Ürünü Ekle";
 
   try {
     const name = productForm.name.value.trim();
-    const category = productForm.category.value;
+    const category = normalizeCategory(productForm.category.value);
+    const tags = getSelectedTags();
     const price = productForm.price.value.trim();
     const description = productForm.description.value.trim();
     const file = productForm.image.files[0];
@@ -458,12 +518,13 @@ productForm.addEventListener("submit", async (e) => {
      * ÜRÜNÜ GÜNCELLE
      */
 
-    if (editingId) {
+    if (isEditing) {
       submitBtn.textContent = "Ürün kaydediliyor...";
 
       const updateData = {
         name,
         category,
+        tags,
         price,
         description,
       };
@@ -494,6 +555,7 @@ productForm.addEventListener("submit", async (e) => {
         {
           name,
           category,
+          tags,
           price,
           description,
           imageUrl: imageUrl || null,
@@ -508,7 +570,7 @@ productForm.addEventListener("submit", async (e) => {
      * Kullanıcıya başarılı olduğunu bildir.
      */
     alert(
-      editingId
+      isEditing
         ? "Ürün başarıyla güncellendi."
         : "Ürün başarıyla eklendi."
     );
@@ -532,8 +594,9 @@ productForm.addEventListener("submit", async (e) => {
    ============================================================ */
 
 async function removeProduct(p) {
+  const productName = p.name || "Bu ürün";
   const confirmed = confirm(
-    `"${p.name || "Bu ürün"}" ürününü silmek istediğine emin misin?`
+    `"${productName}" ürününü silmek istediğine emin misin?`
   );
 
   if (!confirmed) {
@@ -554,4 +617,3 @@ async function removeProduct(p) {
     );
   }
 }
-```
