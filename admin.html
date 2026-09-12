@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yönetim Paneli | Nefes Ev &amp; Parfüm</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="admin-shell">
+
+<section id="login-section" class="login-shell">
+  <h1>Yönetim Paneline Giriş</h1>
+  <form id="login-form">
+    <div class="field">
+      <label for="login-email">E-posta</label>
+      <input id="login-email" name="email" type="email" required autocomplete="username">
+    </div>
+    <div class="field">
+      <label for="login-password">Şifre</label>
+      <input id="login-password" name="password" type="password" required autocomplete="current-password">
+    </div>
+    <p id="login-error" class="error-note" hidden></p>
+    <button type="submit" class="primary-btn">Giriş Yap</button>
+  </form>
+</section>
+
+<section id="panel-section" hidden>
+  <div class="wrap">
+    <div class="admin-header">
+      <h1>Ürün Yönetimi</h1>
+      <button id="logout-btn" class="text-btn" type="button">Çıkış yap</button>
+    </div>
+
+    <div class="admin-grid">
+      <div class="admin-form-card">
+        <h2 id="form-title">Yeni Ürün Ekle</h2>
+        <form id="product-form">
+          <div class="field">
+            <label for="p-name">Ürün adı</label>
+            <input id="p-name" name="name" type="text" required>
+          </div>
+          <div class="field">
+            <label for="p-category">Kategori</label>
+            <select id="p-category" name="category" required>
+              <option value="parfum">Parfüm</option>
+              <option value="temizlik">Temizlik Ürünü</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="p-price">Fiyat (opsiyonel)</label>
+            <input id="p-price" name="price" type="text" placeholder="Örn: 350 TL">
+          </div>
+          <div class="field">
+            <label for="p-description">Kısa açıklama (opsiyonel)</label>
+            <textarea id="p-description" name="description" placeholder="Örn: 50ml, odunsu kokular seven kişiler için"></textarea>
+          </div>
+          <div class="field">
+            <label for="p-image">Fotoğraf</label>
+            <input id="p-image" name="image" type="file" accept="image/*">
+          </div>
+          <div class="form-actions">
+            <button id="submit-btn" type="submit" class="primary-btn">Ürünü Ekle</button>
+            <button id="cancel-edit-btn" class="text-btn" type="button" hidden>Vazgeç</button>
+          </div>
+        </form>
+      </div>
+
+      <div>
+        <div id="product-list" class="admin-list"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script type="module" src="js/admin.js"></script>
+</body>
+</html>
