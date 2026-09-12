@@ -1,61 +1,309 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Güneş Aksesuar &amp; Parfüm | Makyaj, Cilt Bakımı ve Hediyelik Ürünler</title>
-<meta name="description" content="Güneş Aksesuar & Parfüm katalogunda makyaj, parfüm, cilt bakımı, saat, hediyelik ürünler ve kampanyalı setleri inceleyin; beğendiğiniz ürünü WhatsApp'tan sorun.">
-<meta name="robots" content="noindex, nofollow">
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Güneş Aksesuar & Parfüm | Makyaj, Parfüm, Cilt Bakımı ve Hediyelik</title>
+
+  <meta
+    name="description"
+    content="Güneş Aksesuar & Parfüm. Makyaj, parfüm, cilt bakımı, saat, makyaj aksesuarları ve hediyelik ürünleri keşfedin."
+  >
+
+  <!-- Şimdilik Google indekslemesini kapalı tutuyoruz -->
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="./css/style.css">
 </head>
+
 <body>
 
 <header class="site-header">
-  <div class="wrap">
-    <div class="brand-row">
-      <div class="sun-wrap">
-        <svg class="accent-mark" viewBox="0 0 220 220" width="34" height="34" aria-hidden="true">
-          <g stroke="#A8622E" stroke-linecap="round">
-            <line x1="168"   y1="110"   x2="206"   y2="110"   stroke-width="5"/>
-            <line x1="160.3" y1="139"   x2="177.5" y2="149"   stroke-width="3.5"/>
-            <line x1="139"   y1="160.3" x2="158"   y2="193.1" stroke-width="5"/>
-            <line x1="110"   y1="168"   x2="110"   y2="188"   stroke-width="3.5"/>
-            <line x1="81"    y1="160.3" x2="62"    y2="193.1" stroke-width="5"/>
-            <line x1="59.7"  y1="139"   x2="42.5"  y2="149"   stroke-width="3.5"/>
-            <line x1="52"    y1="110"   x2="14"    y2="110"   stroke-width="5"/>
-            <line x1="59.7"  y1="81"    x2="42.5"  y2="71"    stroke-width="3.5"/>
-            <line x1="81"    y1="59.7"  x2="62"    y2="26.9"  stroke-width="5"/>
-            <line x1="110"   y1="52"    x2="110"   y2="32"    stroke-width="3.5"/>
-            <line x1="139"   y1="59.7"  x2="158"   y2="26.9"  stroke-width="5"/>
-            <line x1="160.3" y1="81"    x2="177.5" y2="71"    stroke-width="3.5"/>
-          </g>
-          <circle cx="110" cy="110" r="44" fill="#A8622E"/>
-        </svg>
-        <span class="sparkle" style="left: 6px;  animation-delay: 0s;"></span>
-        <span class="sparkle" style="left: 16px; animation-delay: 0.8s;"></span>
-        <span class="sparkle" style="left: 24px; animation-delay: 1.6s;"></span>
-        <span class="sparkle" style="left: 12px; animation-delay: 2.4s;"></span>
-      </div>
-      <h1 class="brand-name">Güneş Aksesuar &amp; Parfüm</h1>
+
+  <div class="topbar wrap">
+
+    <a href="./index.html" class="brand-logo" aria-label="Güneş Aksesuar & Parfüm">
+      <span class="brand-sun">☼</span>
+
+      <span class="brand-name">
+        Güneş
+        <small>AKSESUAR & PARFÜM</small>
+      </span>
+    </a>
+
+    <div class="topbar-actions">
+      <a
+        class="header-whatsapp"
+        href="https://wa.me/905524084122"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span>◉</span>
+        WhatsApp
+      </a>
+
+      <button
+        type="button"
+        class="mobile-menu-btn"
+        aria-label="Menüyü aç"
+      >
+        ☰
+      </button>
     </div>
-    <p class="brand-tagline">Makyaj, parfüm, cilt bakımı, saat ve hediyelik seçenekleri tek katalogda.</p>
-    <p class="contact-line">Sipariş ve sorularınız için: <a href="https://wa.me/905524084122" target="_blank" rel="noopener">WhatsApp</a></p>
+
   </div>
+
 </header>
 
-<main class="wrap">
-  <nav id="category-tabs" class="tabs" aria-label="Kategoriler"></nav>
 
-  <section id="product-grid" class="product-grid" aria-live="polite"></section>
-  <p id="empty-state" class="empty-state" hidden>Bu bölümde henüz ürün yok.</p>
+<main>
+
+  <!-- HERO -->
+
+  <section class="hero">
+    <div class="wrap hero-inner">
+
+      <div class="hero-content">
+
+        <div class="eyebrow">
+          GÜZELLİK HER ZAMAN SENİNLE
+        </div>
+
+        <h1>
+          Güneş
+          <span>Aksesuar</span>
+          & Parfüm
+        </h1>
+
+        <p>
+          Makyaj, parfüm, cilt bakımı, saat ve
+          hediyelik seçenekleri tek katalogda.
+        </p>
+
+        <a
+          class="hero-whatsapp"
+          href="https://wa.me/905524084122"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span>◉</span>
+          Sipariş ve sorularınız için WhatsApp
+          <strong>→</strong>
+        </a>
+
+        <div class="hero-features">
+
+          <div class="hero-feature">
+            <div class="feature-icon">↗</div>
+            <div>
+              <strong>Hızlı İletişim</strong>
+              <small>WhatsApp ile kolay sipariş</small>
+            </div>
+          </div>
+
+          <div class="hero-feature">
+            <div class="feature-icon">♡</div>
+            <div>
+              <strong>Güvenilir Alışveriş</strong>
+              <small>Özenle seçilen ürünler</small>
+            </div>
+          </div>
+
+          <div class="hero-feature">
+            <div class="feature-icon">□</div>
+            <div>
+              <strong>Özel Seçimler</strong>
+              <small>Kendiniz ve sevdikleriniz için</small>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="hero-visual">
+
+        <div class="hero-glow"></div>
+
+        <div class="hero-card hero-card-back"></div>
+
+        <div class="hero-product product-bottle">
+          <div class="bottle-cap"></div>
+          <div class="bottle-body">
+            <small>GÜNEŞ</small>
+            <strong>PARFÜM</strong>
+          </div>
+        </div>
+
+        <div class="hero-product product-lipstick">
+          <div class="lipstick-top"></div>
+          <div class="lipstick-body"></div>
+        </div>
+
+        <div class="hero-product product-compact">
+          <div></div>
+        </div>
+
+        <div class="hero-flower">✿</div>
+
+        <div class="hero-script">
+          Kendine<br>
+          <span>İyi Bak</span>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- KATEGORİLER -->
+
+  <section class="catalog-section">
+
+    <div class="category-nav" id="category-nav">
+      <!-- catalog.js dolduracak -->
+    </div>
+
+    <div class="wrap">
+
+      <div class="catalog-heading">
+
+        <div>
+          <div class="section-eyebrow">
+            KEŞFET
+          </div>
+
+          <h2>Öne Çıkan Ürünler</h2>
+
+          <p>
+            Güneş Aksesuar & Parfüm ürünlerini keşfedin.
+          </p>
+        </div>
+
+      </div>
+
+
+      <div id="catalog-grid" class="product-grid">
+        <div class="empty-note">
+          Ürünler yükleniyor...
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ALT BİLGİ / AVANTAJLAR -->
+
+  <section class="advantages">
+
+    <div class="wrap advantages-grid">
+
+      <div class="advantage">
+        <div class="advantage-icon">▱</div>
+
+        <div>
+          <strong>Geniş Ürün Yelpazesi</strong>
+
+          <p>
+            Makyaj, parfüm, cilt bakımı,
+            saat ve daha fazlası.
+          </p>
+        </div>
+      </div>
+
+
+      <div class="advantage">
+        <div class="advantage-icon">↗</div>
+
+        <div>
+          <strong>Kolay Sipariş</strong>
+
+          <p>
+            WhatsApp üzerinden hızlı
+            ve kolay iletişim.
+          </p>
+        </div>
+      </div>
+
+
+      <div class="advantage">
+        <div class="advantage-icon">♡</div>
+
+        <div>
+          <strong>Güvenilir Ürünler</strong>
+
+          <p>
+            Özenle seçilen kaliteli
+            ürün seçenekleri.
+          </p>
+        </div>
+      </div>
+
+
+      <div class="advantage">
+        <div class="advantage-icon">□</div>
+
+        <div>
+          <strong>Sevdiklerinize Hediye</strong>
+
+          <p>
+            Özel günler için
+            hediye seçenekleri.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
 </main>
 
+
 <footer class="site-footer">
+
   <div class="wrap">
-    <p>Güneş Aksesuar &amp; Parfüm - siparişler WhatsApp üzerinden alınır.</p>
+
+    <div class="footer-brand">
+      <span class="brand-sun">☼</span>
+
+      <strong>Güneş Aksesuar & Parfüm</strong>
+    </div>
+
+    <p>
+      Makyaj · Parfüm · Cilt Bakımı · Saat · Hediyelik
+    </p>
+
+    <p>
+      Sipariş ve bilgi için
+      <a
+        href="https://wa.me/905524084122"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        WhatsApp
+      </a>
+    </p>
+
   </div>
+
 </footer>
 
-<script type="module" src="js/catalog.js"></script>
+
+<script type="module" src="./js/catalog.js"></script>
+
 </body>
 </html>
