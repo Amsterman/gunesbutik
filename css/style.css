@@ -86,10 +86,6 @@ input, textarea, select {
 }
 
 .accent-mark {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--color-accent);
   flex-shrink: 0;
   align-self: center;
 }
