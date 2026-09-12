@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Yönetim Paneli | Nefes Ev &amp; Parfüm</title>
+<title>Yönetim Paneli | Güneş Aksesuar &amp; Parfüm</title>
 <meta name="robots" content="noindex">
 <link rel="stylesheet" href="css/style.css">
 </head>
@@ -41,12 +41,13 @@
             <input id="p-name" name="name" type="text" required>
           </div>
           <div class="field">
-            <label for="p-category">Kategori</label>
-            <select id="p-category" name="category" required>
-              <option value="parfum">Parfüm</option>
-              <option value="aksesuar">Aksesuar</option>
-            </select>
+            <label for="p-category">Ana kategori</label>
+            <select id="p-category" name="category" required></select>
           </div>
+          <fieldset class="tag-fieldset">
+            <legend>Özel koleksiyonlar</legend>
+            <div id="tag-options" class="tag-options"></div>
+          </fieldset>
           <div class="field">
             <label for="p-price">Fiyat (opsiyonel)</label>
             <input id="p-price" name="price" type="text" placeholder="Örn: 350 TL">
@@ -57,7 +58,7 @@
           </div>
           <div class="field">
             <label for="p-image">Fotoğraf</label>
-            <input id="p-image" name="image" type="file" accept="image/*">
+            <input id="p-image" name="image" type="file" accept="image/jpeg,image/png,image/webp,image/gif">
           </div>
           <div class="form-actions">
             <button id="submit-btn" type="submit" class="primary-btn">Ürünü Ekle</button>
