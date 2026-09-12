@@ -79,3 +79,4 @@ export function getCreatedAtMillis(product) {
 
   return 0;
 }
+export const PRODUCT_TAGS = PRODUCT_COLLECTIONS;
