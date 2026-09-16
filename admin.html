@@ -100,6 +100,28 @@
         </div>
       </div>
       <p id="stats-status" style="margin:14px 0 0;"></p>
+
+      <div class="admin-form-card" style="margin-top:16px;">
+        <h3 style="margin-top:0;">Tarih Aralığı Sorgulama</h3>
+        <div style="display:grid;grid-template-columns:repeat(2,minmax(140px,1fr));gap:12px;">
+          <div class="field">
+            <label for="stats-start-date">Başlangıç tarihi</label>
+            <input id="stats-start-date" type="date">
+          </div>
+          <div class="field">
+            <label for="stats-end-date">Bitiş tarihi</label>
+            <input id="stats-end-date" type="date">
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
+          <button id="stats-query-btn" class="primary-btn" type="button">Sorgula</button>
+          <button id="stats-clear-btn" class="text-btn" type="button">Temizle</button>
+        </div>
+        <div style="margin-top:14px;font-size:1.05rem;">
+          Seçilen aralık: <strong id="stats-range-result">0</strong> ziyaretçi
+        </div>
+        <p id="stats-range-status" class="empty-note"></p>
+      </div>
     </section>
   </div>
 </section>
