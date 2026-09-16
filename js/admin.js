@@ -16,6 +16,7 @@ import {
   onSnapshot,
   serverTimestamp,
   getDocs,
+
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
 import { firebaseConfig } from "./firebase-config.js";
@@ -209,6 +210,12 @@ const statsMonth = document.getElementById("stats-month");
 const statsTotal = document.getElementById("stats-total");
 const statsStatus = document.getElementById("stats-status");
 const refreshStatsBtn = document.getElementById("refresh-stats-btn");
+const statsStartDate = document.getElementById("stats-start-date");
+const statsEndDate = document.getElementById("stats-end-date");
+const statsQueryBtn = document.getElementById("stats-query-btn");
+const statsClearBtn = document.getElementById("stats-clear-btn");
+const statsRangeResult = document.getElementById("stats-range-result");
+const statsRangeStatus = document.getElementById("stats-range-status");
 
 let editingId = null;
 let unsubscribeList = null;
@@ -604,83 +611,117 @@ productForm.addEventListener("submit", async (e) => {
    ============================================================ */
 
 function getLocalDateKey(date = new Date()) {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
-function startOfWeek(date = new Date()) {
-  const d = new Date(date);
-  const day = d.getDay();
-  const diff = day === 0 ? -6 : 1 - day;
-  d.setDate(d.getDate() + diff);
-  d.setHours(0, 0, 0, 0);
-  return d;
+function dateFromKey(key) {
+  const [year, month, day] = key.split("-").map(Number);
+  return new Date(year, month - 1, day);
 }
 
-function startOfMonth(date = new Date()) {
-  const d = new Date(date.getFullYear(), date.getMonth(), 1);
-  d.setHours(0, 0, 0, 0);
-  return d;
+function shiftDateKey(date, days) {
+  const copy = new Date(date);
+  copy.setDate(copy.getDate() + days);
+  return getLocalDateKey(copy);
+}
+
+function sumStatsInRange(docs, startKey, endKey) {
+  return docs.reduce((total, item) => {
+    const data = item.data();
+    const key = String(data.dateKey || item.id);
+    const count = Number(data.count || 0);
+    if (key >= startKey && key <= endKey) return total + (Number.isFinite(count) ? count : 0);
+    return total;
+  }, 0);
+}
+
+async function getAllVisitorStats() {
+  const snapshot = await getDocs(collection(db, "visitorStats"));
+  return snapshot.docs;
 }
 
 async function loadVisitorStats() {
   if (!statsToday || !statsWeek || !statsMonth || !statsTotal) return;
 
-  if (statsStatus) statsStatus.textContent = "İstatistikler yükleniyor...";
+  statsStatus.textContent = "İstatistikler yükleniyor...";
   if (refreshStatsBtn) refreshStatsBtn.disabled = true;
 
   try {
-    const snapshot = await getDocs(collection(db, "visitorStats"));
-    const rows = snapshot.docs.map((item) => {
-      const data = item.data();
-      return {
-        dateKey: data.dateKey || item.id,
-        count: Number(data.count) || 0,
-      };
-    });
+    const now = new Date();
+    const todayKey = getLocalDateKey(now);
+    const weekStart = new Date(now);
+    const day = weekStart.getDay();
+    const mondayOffset = day === 0 ? -6 : 1 - day;
+    weekStart.setDate(weekStart.getDate() + mondayOffset);
+    const weekStartKey = getLocalDateKey(weekStart);
+    const monthStartKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
 
-    const today = new Date();
-    const todayKey = getLocalDateKey(today);
-    const weekStartKey = getLocalDateKey(startOfWeek(today));
-    const monthStartKey = getLocalDateKey(startOfMonth(today));
-
-    let todayCount = 0;
-    let weekCount = 0;
-    let monthCount = 0;
-    let totalCount = 0;
-
-    rows.forEach((row) => {
-      totalCount += row.count;
-      if (row.dateKey === todayKey) todayCount += row.count;
-      if (row.dateKey >= weekStartKey && row.dateKey <= todayKey) weekCount += row.count;
-      if (row.dateKey >= monthStartKey && row.dateKey <= todayKey) monthCount += row.count;
-    });
-
-    statsToday.textContent = todayCount.toLocaleString("tr-TR");
-    statsWeek.textContent = weekCount.toLocaleString("tr-TR");
-    statsMonth.textContent = monthCount.toLocaleString("tr-TR");
-    statsTotal.textContent = totalCount.toLocaleString("tr-TR");
-
-    if (statsStatus) {
-      statsStatus.textContent = `Son güncelleme: ${new Date().toLocaleTimeString("tr-TR")}`;
-    }
+    const docs = await getAllVisitorStats();
+    statsToday.textContent = String(sumStatsInRange(docs, todayKey, todayKey));
+    statsWeek.textContent = String(sumStatsInRange(docs, weekStartKey, todayKey));
+    statsMonth.textContent = String(sumStatsInRange(docs, monthStartKey, todayKey));
+    statsTotal.textContent = String(sumStatsInRange(docs, "0000-01-01", "9999-12-31"));
+    statsStatus.textContent = `Son güncelleme: ${new Date().toLocaleTimeString("tr-TR")}`;
   } catch (error) {
     console.error("Ziyaretçi istatistikleri yüklenemedi:", error);
     statsToday.textContent = "-";
     statsWeek.textContent = "-";
     statsMonth.textContent = "-";
     statsTotal.textContent = "-";
-    if (statsStatus) {
-      statsStatus.textContent = "İstatistikler okunamadı. Firestore güvenlik kurallarını kontrol et.";
-    }
+    statsStatus.textContent = "İstatistikler okunamadı. Firestore güvenlik kurallarını kontrol et.";
   } finally {
     if (refreshStatsBtn) refreshStatsBtn.disabled = false;
   }
 }
 
+async function queryVisitorStatsByDateRange() {
+  if (!statsStartDate || !statsEndDate || !statsRangeResult || !statsRangeStatus) return;
+
+  const startKey = statsStartDate.value;
+  const endKey = statsEndDate.value;
+
+  if (!startKey || !endKey) {
+    statsRangeResult.textContent = "0";
+    statsRangeStatus.textContent = "Lütfen başlangıç ve bitiş tarihini seç.";
+    return;
+  }
+
+  if (startKey > endKey) {
+    statsRangeResult.textContent = "0";
+    statsRangeStatus.textContent = "Başlangıç tarihi, bitiş tarihinden sonra olamaz.";
+    return;
+  }
+
+  statsRangeStatus.textContent = "Sorgulanıyor...";
+  if (statsQueryBtn) statsQueryBtn.disabled = true;
+
+  try {
+    const docs = await getAllVisitorStats();
+    const total = sumStatsInRange(docs, startKey, endKey);
+    statsRangeResult.textContent = String(total);
+    statsRangeStatus.textContent = `${startKey} – ${endKey} aralığı.`;
+  } catch (error) {
+    console.error("Tarih aralığı sorgusu başarısız:", error);
+    statsRangeResult.textContent = "-";
+    statsRangeStatus.textContent = "Sorgu yapılamadı. Firestore kurallarını kontrol et.";
+  } finally {
+    if (statsQueryBtn) statsQueryBtn.disabled = false;
+  }
+}
+
+function clearVisitorStatsDateRange() {
+  if (statsStartDate) statsStartDate.value = "";
+  if (statsEndDate) statsEndDate.value = "";
+  if (statsRangeResult) statsRangeResult.textContent = "0";
+  if (statsRangeStatus) statsRangeStatus.textContent = "";
+}
+
 refreshStatsBtn?.addEventListener("click", loadVisitorStats);
+statsQueryBtn?.addEventListener("click", queryVisitorStatsByDateRange);
+statsClearBtn?.addEventListener("click", clearVisitorStatsDateRange);
 
 /* ============================================================
    ÜRÜN SİL
