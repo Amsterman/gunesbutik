@@ -15,6 +15,7 @@ import {
   doc,
   onSnapshot,
   serverTimestamp,
+  getDocs,
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
 import { firebaseConfig } from "./firebase-config.js";
@@ -202,6 +203,13 @@ const cancelEditBtn = document.getElementById("cancel-edit-btn");
 const categorySelect = document.getElementById("p-category");
 const tagOptions = document.getElementById("tag-options");
 
+const statsToday = document.getElementById("stats-today");
+const statsWeek = document.getElementById("stats-week");
+const statsMonth = document.getElementById("stats-month");
+const statsTotal = document.getElementById("stats-total");
+const statsStatus = document.getElementById("stats-status");
+const refreshStatsBtn = document.getElementById("refresh-stats-btn");
+
 let editingId = null;
 let unsubscribeList = null;
 
@@ -267,6 +275,7 @@ onAuthStateChanged(auth, (user) => {
     loginSection.hidden = true;
     panelSection.hidden = false;
     listenProducts();
+    loadVisitorStats();
   } else {
     loginSection.hidden = false;
     panelSection.hidden = true;
@@ -588,6 +597,90 @@ productForm.addEventListener("submit", async (e) => {
     submitBtn.disabled = false;
   }
 });
+
+
+/* ============================================================
+   ZİYARETÇİ İSTATİSTİKLERİ
+   ============================================================ */
+
+function getLocalDateKey(date = new Date()) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+function startOfWeek(date = new Date()) {
+  const d = new Date(date);
+  const day = d.getDay();
+  const diff = day === 0 ? -6 : 1 - day;
+  d.setDate(d.getDate() + diff);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+function startOfMonth(date = new Date()) {
+  const d = new Date(date.getFullYear(), date.getMonth(), 1);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+async function loadVisitorStats() {
+  if (!statsToday || !statsWeek || !statsMonth || !statsTotal) return;
+
+  if (statsStatus) statsStatus.textContent = "İstatistikler yükleniyor...";
+  if (refreshStatsBtn) refreshStatsBtn.disabled = true;
+
+  try {
+    const snapshot = await getDocs(collection(db, "visitorStats"));
+    const rows = snapshot.docs.map((item) => {
+      const data = item.data();
+      return {
+        dateKey: data.dateKey || item.id,
+        count: Number(data.count) || 0,
+      };
+    });
+
+    const today = new Date();
+    const todayKey = getLocalDateKey(today);
+    const weekStartKey = getLocalDateKey(startOfWeek(today));
+    const monthStartKey = getLocalDateKey(startOfMonth(today));
+
+    let todayCount = 0;
+    let weekCount = 0;
+    let monthCount = 0;
+    let totalCount = 0;
+
+    rows.forEach((row) => {
+      totalCount += row.count;
+      if (row.dateKey === todayKey) todayCount += row.count;
+      if (row.dateKey >= weekStartKey && row.dateKey <= todayKey) weekCount += row.count;
+      if (row.dateKey >= monthStartKey && row.dateKey <= todayKey) monthCount += row.count;
+    });
+
+    statsToday.textContent = todayCount.toLocaleString("tr-TR");
+    statsWeek.textContent = weekCount.toLocaleString("tr-TR");
+    statsMonth.textContent = monthCount.toLocaleString("tr-TR");
+    statsTotal.textContent = totalCount.toLocaleString("tr-TR");
+
+    if (statsStatus) {
+      statsStatus.textContent = `Son güncelleme: ${new Date().toLocaleTimeString("tr-TR")}`;
+    }
+  } catch (error) {
+    console.error("Ziyaretçi istatistikleri yüklenemedi:", error);
+    statsToday.textContent = "-";
+    statsWeek.textContent = "-";
+    statsMonth.textContent = "-";
+    statsTotal.textContent = "-";
+    if (statsStatus) {
+      statsStatus.textContent = "İstatistikler okunamadı. Firestore güvenlik kurallarını kontrol et.";
+    }
+  } finally {
+    if (refreshStatsBtn) refreshStatsBtn.disabled = false;
+  }
+}
+
+refreshStatsBtn?.addEventListener("click", loadVisitorStats);
 
 /* ============================================================
    ÜRÜN SİL
