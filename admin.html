@@ -71,6 +71,36 @@
         <div id="product-list" class="admin-list"></div>
       </div>
     </div>
+
+    <section id="visitor-stats" class="admin-form-card" style="margin-top:24px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;">
+        <div>
+          <h2 style="margin:0 0 6px;">Ziyaretçi İstatistikleri</h2>
+          <p style="margin:0;">Aynı tarayıcı aynı gün içinde yalnızca 1 kez sayılır.</p>
+        </div>
+        <button id="refresh-stats-btn" class="primary-btn" type="button">Yenile</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:18px;">
+        <div style="padding:16px;border:1px solid #ddd;border-radius:12px;">
+          <small>Bugün</small>
+          <strong id="stats-today" style="display:block;font-size:28px;margin-top:4px;">-</strong>
+        </div>
+        <div style="padding:16px;border:1px solid #ddd;border-radius:12px;">
+          <small>Bu hafta</small>
+          <strong id="stats-week" style="display:block;font-size:28px;margin-top:4px;">-</strong>
+        </div>
+        <div style="padding:16px;border:1px solid #ddd;border-radius:12px;">
+          <small>Bu ay</small>
+          <strong id="stats-month" style="display:block;font-size:28px;margin-top:4px;">-</strong>
+        </div>
+        <div style="padding:16px;border:1px solid #ddd;border-radius:12px;">
+          <small>Toplam</small>
+          <strong id="stats-total" style="display:block;font-size:28px;margin-top:4px;">-</strong>
+        </div>
+      </div>
+      <p id="stats-status" style="margin:14px 0 0;"></p>
+    </section>
   </div>
 </section>
 
