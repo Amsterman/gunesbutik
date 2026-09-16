@@ -123,12 +123,12 @@ main.wrap { padding: 26px 0 58px; }
 .product-image-wrap, .product-image-container, .product-media {
   position: relative;
   aspect-ratio: 1 / 1;
-  background: #f5f2ee;
+  background: #f8f6f2;
   overflow: hidden;
 }
 .product-card img.product-image, .product-card .product-image-wrap img,
 .product-card .product-image-container img, .product-card .product-media img {
-  width: 100%; height: 100%; object-fit: cover; display: block;
+  width: 100%; height: 100%; object-fit: contain; display: block;
   transition: transform .35s ease;
 }
 .product-card:hover img { transform: scale(1.035); }
