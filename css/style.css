@@ -120,28 +120,41 @@ main.wrap { padding: 26px 0 58px; }
   transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
 }
 .product-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: #ddd3c8; }
-.product-image-wrap, .product-image-container, .product-media {
+.product-photo {
   position: relative;
   aspect-ratio: 1 / 1;
+  width: 100%;
   background: #f8f6f2;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.product-card img.product-image, .product-card .product-image-wrap img,
-.product-card .product-image-container img, .product-card .product-media img {
-  width: 100%; height: 100%; object-fit: contain; display: block;
+.product-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center;
   transition: transform .35s ease;
 }
-.product-card:hover img { transform: scale(1.035); }
-.product-info { padding: 15px 15px 16px; }
-.product-name, .product-title {
+.product-card:hover .product-photo img { transform: scale(1.02); }
+.photo-placeholder {
+  color: var(--muted);
+  font-size: .85rem;
+}
+.product-body { padding: 15px 15px 16px; }
+.product-body h3 {
   margin: 0;
   font-size: 1rem;
   line-height: 1.35;
   font-weight: 720;
   letter-spacing: -.01em;
 }
-.product-price { margin-top: 7px; color: var(--accent-dark); font-weight: 800; font-size: 1.03rem; }
-.product-description { margin: 7px 0 0; color: var(--muted); font-size: .87rem; }
+.product-desc { margin: 7px 0 0; color: var(--muted); font-size: .87rem; }
+.product-price { margin: 7px 0 0; color: var(--accent-dark); font-weight: 800; font-size: 1.03rem; }
 .product-meta { color: var(--muted); font-size: .78rem; margin-top: 6px; }
 .product-actions { display: flex; gap: 8px; margin-top: 14px; }
 .whatsapp-btn, .product-card .whatsapp-button {
@@ -245,10 +258,10 @@ input[type="file"] { padding: 9px; background: var(--surface-soft); }
   .tabs button, .tabs a { padding: 8px 12px; font-size: .82rem; }
   .product-grid { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
   .product-card { border-radius: 14px; }
-  .product-info { padding: 11px; }
-  .product-name, .product-title { font-size: .88rem; }
+  .product-body { padding: 11px; }
+  .product-body h3 { font-size: .88rem; }
   .product-price { font-size: .93rem; }
-  .product-description { font-size: .77rem; }
+  .product-desc { font-size: .77rem; }
   .whatsapp-btn, .product-card .whatsapp-button { min-height: 38px; padding: 7px 8px; font-size: .76rem; }
   .admin-shell .wrap { padding-top: 18px; }
   .admin-header { align-items: flex-start; }
