@@ -34,16 +34,6 @@ a { color: inherit; }
     linear-gradient(180deg, #fff 0%, #faf8f5 100%);
   border-bottom: 1px solid var(--line);
 }
-.site-header::after {
-  content: "";
-  position: absolute;
-  width: 260px;
-  height: 260px;
-  border-radius: 50%;
-  right: -150px;
-  bottom: -190px;
-  border: 1px solid rgba(168,98,46,.14);
-}
 .site-header .wrap { padding: 34px 0 30px; text-align: center; }
 .brand-row { display: inline-flex; align-items: center; gap: 12px; }
 .sun-wrap { position: relative; width: 42px; height: 42px; display: grid; place-items: center; }
@@ -320,5 +310,56 @@ input[type="file"] { padding: 9px; background: var(--surface-soft); }
   .admin-row {
     gap: 10px;
     padding: 12px;
+  }
+}
+
+/* Güneş parıltı animasyonu */
+.sun-wrap {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+}
+
+.sun-wrap .sparkle {
+  position: absolute;
+  bottom: 2px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #A8622E;
+  opacity: 0;
+  pointer-events: none;
+  animation: sunSparkle 3.2s ease-in-out infinite;
+}
+
+.sun-wrap .sparkle:nth-of-type(1) { transform: translate(0, 0) scale(.7); }
+.sun-wrap .sparkle:nth-of-type(2) { transform: translate(0, 0) scale(.9); }
+.sun-wrap .sparkle:nth-of-type(3) { transform: translate(0, 0) scale(.65); }
+.sun-wrap .sparkle:nth-of-type(4) { transform: translate(0, 0) scale(.8); }
+
+@keyframes sunSparkle {
+  0%, 100% {
+    opacity: 0;
+    transform: translateY(5px) scale(.55);
+  }
+  20% {
+    opacity: .9;
+  }
+  55% {
+    opacity: .55;
+    transform: translateY(-11px) scale(1);
+  }
+  75% {
+    opacity: 0;
+    transform: translateY(-17px) scale(.35);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sun-wrap .sparkle {
+    animation: none;
+    opacity: .35;
   }
 }
