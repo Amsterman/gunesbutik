@@ -274,3 +274,51 @@ input[type="file"] { padding: 9px; background: var(--surface-soft); }
   .stat-card, .stats-card { padding: 13px; }
   .stat-card strong, .stats-card strong { font-size: 1.45rem; }
 }
+
+/* ============================================================
+   ADMIN ÜRÜN FOTOĞRAFI DÜZELTMESİ
+   Admin.js .admin-thumb sınıfını kullanır.
+   Görseller kesinlikle satırı büyütmez.
+   ============================================================ */
+.admin-row .admin-thumb {
+  width: 72px;
+  height: 72px;
+  min-width: 72px;
+  max-width: 72px;
+  flex: 0 0 72px;
+  display: block;
+  object-fit: contain;
+  object-position: center;
+  background: #f8f6f2;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.admin-row > .admin-thumb {
+  aspect-ratio: 1 / 1;
+}
+
+.admin-row-info {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.admin-row-actions {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 620px) {
+  .admin-row .admin-thumb {
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    max-width: 60px;
+    flex-basis: 60px;
+  }
+
+  .admin-row {
+    gap: 10px;
+    padding: 12px;
+  }
+}
